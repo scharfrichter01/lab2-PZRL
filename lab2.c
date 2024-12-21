@@ -41,30 +41,39 @@ void replace_text(const char *filename, const char *old_text, const char *new_te
 }
 
 void delete_lines(const char *filename, const char *pattern) {
-    regex_t regex;
-    if (regcomp(&regex, pattern, REG_EXTENDED)) {
-        fprintf(stderr, "Could not compile regex\n");
-        return;
-    }
-
     FILE *file = fopen(filename, "r+");
     if (!file) {
-        perror("File opening failed");
+        perror("Error opening file");
         return;
     }
 
     char line[LINE_SIZE];
-    long position;
-    while (fgets(line, sizeof(line), file)) {
-        position = ftell(file);
+    regex_t regex;
+    if (regcomp(&regex, pattern, REG_EXTENDED)) {
+        fprintf(stderr, "Could not compile regex\n");
+        fclose(file);
+        return;
+    }
 
+    FILE *temp_file = tmpfile();
+
+    while (fgets(line, sizeof(line), file)) {
         if (regexec(&regex, line, 0, NULL, 0) != 0) {
-            fseek(file, position - strlen(line), SEEK_SET);
-            fprintf(file, "%s", line);
+            fputs(line, temp_file);
         }
     }
 
     fclose(file);
+    rewind(temp_file);
+
+    file = fopen(filename, "w");
+
+    while (fgets(line, sizeof(line), temp_file)) {
+        fputs(line, file);
+    }
+
+    fclose(file);
+    fclose(temp_file);
     regfree(&regex);
 }
 

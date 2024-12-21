@@ -17,6 +17,6 @@ clean:
 
 test:
 	./sed_simplified input.txt -r "old text" "new text"
-	./sed_simplified input.txt -d "text to delete"
+	./sed_simplified input.txt -d "delete"
 	./sed_simplified input.txt -i -f "Prefix: "
 	./sed_simplified input.txt -i -b " - Suffix"
