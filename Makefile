@@ -11,3 +11,12 @@ main.o: main.c lab2.h
 
 lab2.o: lab2.c lab2.h
 	$(CC) $(CFLAGS) -c lab2.c
+
+clean:
+	rm -f $(OBJ) $(EXEC)
+
+test:
+	./sed_simplified input.txt -r "old text" "new text"
+	./sed_simplified input.txt -d "text to delete"
+	./sed_simplified input.txt -i -f "Prefix: "
+	./sed_simplified input.txt -i -b " - Suffix"

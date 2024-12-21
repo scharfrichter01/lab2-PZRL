@@ -1,2 +1,9 @@
 *.o
+*.out
+*.exe
+*.a
+*.so
+*.d
+*.log
+build/
 sed_simplified
